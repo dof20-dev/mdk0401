@@ -1,84 +1,137 @@
-Пользователи
-1. users — пользователи
+# Описание сущностей БД
+
+## Пользователи
+
+### users — пользователи
+
 Все, кто входит в систему.
 
-Поля: id, email, password_hash, first_name, last_name, role_id, is_active, created_at.
+**Поля:** `id`, `email`, `password_hash`, `first_name`, `last_name`, `role_id`, `is_active`, `created_at`.
 
-Связи: → roles (N:1); → teachers / students / parents (1:1).
+**Связи:** → roles (N:1); → teachers / students / parents (1:1).
 
-2. roles — роли
+### roles — роли
+
 Справочник: админ, учитель, ученик, родитель, завуч.
 
-Поля: id, code, name.
+**Поля:** `id`, `code`, `name`.
 
-Связи: → users (1:N).
+**Связи:** → users (1:N).
 
-Профили
-3. teachers — учителя
-Поля: id, user_id, employee_number, hire_date.
+---
 
-Связи: → users (1:1); → lessons (1:N).
+## Профили
 
-4. students — ученики
-Поля: id, user_id, class_id, parent_id, birth_date.
+### teachers — учителя
 
-Связи: → users (1:1); → classes (N:1); → grades, attendance (1:N).
+**Поля:** `id`, `user_id`, `employee_number`, `hire_date`.
 
-5. parents — родители
-Поля: id, user_id, contact_phone.
+**Связи:** → users (1:1); → lessons (1:N).
 
-Связи: → users (1:1); → students (1:N).
+### students — ученики
 
-Учебный процесс
-6. classes — классы
-Поля: id, name, academic_year, head_teacher_id.
+**Поля:** `id`, `user_id`, `class_id`, `parent_id`, `birth_date`.
 
-Связи: → students (1:N); → schedule (1:N).
+**Связи:** → users (1:1); → classes (N:1); → parents (N:1); → grades, attendance (1:N).
 
-7. subjects — предметы
-Поля: id, name, code, is_active.
+### parents — родители
 
-Связи: → lessons (1:N).
+**Поля:** `id`, `user_id`, `contact_phone`.
 
-8. schedule — расписание
-Поля: id, class_id, subject_id, teacher_id, day_of_week, lesson_number, start_time, end_time.
+**Связи:** → users (1:1); → students (1:N).
 
-Связи: → lessons (1:N).
+---
 
-9. lessons — уроки
-Поля: id, schedule_id, class_id, subject_id, teacher_id, lesson_date, topic.
+## Учебный процесс
 
-Связи: → grades, attendance, homework (1:N).
+### classes — классы
 
-Оценки и посещаемость
-10. grades — оценки
-Поля: id, student_id, lesson_id, teacher_id, value, grade_type, comment, graded_at.
+**Поля:** `id`, `name`, `academic_year`, `head_teacher_id`.
 
-Связи: → students, lessons, teachers (N:1).
+**Связи:** → students (1:N); → schedule (1:N).
 
-11. attendance — посещаемость
-Поля: id, student_id, lesson_id, status, reason, marked_by, marked_at.
+### subjects — предметы
 
-Связи: → students, lessons (N:1).
+**Поля:** `id`, `name`, `code`, `is_active`.
 
-Домашние задания
-12. homework — домашние задания
-Поля: id, lesson_id, teacher_id, class_id, subject_id, description, due_date, is_published.
+**Связи:** → lessons (1:N).
 
-Связи: → lessons (N:1).
+### schedule — расписание
 
-Сводная таблица связей
-Связь	Тип
-users → roles	N:1
-users → teachers	1:1
-users → students	1:1
-users → parents	1:1
-parents → students	1:N
-students → classes	N:1
-classes → schedule	1:N
-schedule → lessons	1:N
-lessons → grades	1:N
-lessons → attendance	1:N
-lessons → homework	1:N
-students → grades	1:N
-students → attendance	1:N
+**Поля:** `id`, `class_id`, `subject_id`, `teacher_id`, `day_of_week`, `lesson_number`, `start_time`, `end_time`.
+
+**Связи:** → lessons (1:N).
+
+### lessons — уроки
+
+**Поля:** `id`, `schedule_id`, `class_id`, `subject_id`, `teacher_id`, `lesson_date`, `topic`.
+
+**Связи:** → grades, attendance, homework (1:N).
+
+---
+
+## Оценки и посещаемость
+
+### grades — оценки
+
+**Поля:** `id`, `student_id`, `lesson_id`, `teacher_id`, `value`, `grade_type`, `comment`, `graded_at`.
+
+**Связи:** → students, lessons, teachers (N:1).
+
+### attendance — посещаемость
+
+**Поля:** `id`, `student_id`, `lesson_id`, `status`, `reason`, `marked_by`, `marked_at`.
+
+**Связи:** → students, lessons (N:1).
+
+---
+
+## Домашние задания
+
+### homework — домашние задания
+
+**Поля:** `id`, `lesson_id`, `teacher_id`, `class_id`, `subject_id`, `description`, `due_date`, `is_published`.
+
+**Связи:** → lessons (N:1).
+
+---
+
+## Сводная таблица связей
+
+| Связь | Тип |
+| --- | --- |
+| users → roles | N:1 |
+| users → teachers | 1:1 |
+| users → students | 1:1 |
+| users → parents | 1:1 |
+| parents → students | 1:N |
+| students → classes | N:1 |
+| classes → schedule | 1:N |
+| schedule → lessons | 1:N |
+| lessons → grades | 1:N |
+| lessons → attendance | 1:N |
+| lessons → homework | 1:N |
+| students → grades | 1:N |
+| students → attendance | 1:N |
+
+---
+
+## Что убрано и почему
+
+| Убрано | Причина |
+| --- | --- |
+| user_roles | Одна роль на пользователя — хватит `role_id` в users |
+| parent_student | Один родитель на ученика — хватит `parent_id` в students |
+| teacher_subjects | Связь учитель-предмет-класс хранится прямо в `schedule` и `lessons` |
+| homework_submissions | Сдача ДЗ — второй этап |
+| audit_log | Журнал действий — позже |
+| notifications | Уведомления — когда будет Celery |
+
+---
+
+## Итог
+
+- Было: **18 таблиц**.
+- Стало: **12 таблиц**.
+- Связи: только 1:1, 1:N, N:1. Никаких M:N.
+- Добавить обратно можно без переделки — просто новые таблицы и внешние ключи.
