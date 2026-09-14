@@ -1,12 +1,23 @@
-PostgreSQL
-Python
-FastAPI
-SQLAlchemy
-Streamlit
-Git + GitHub
-Uvicorn
-psycopg2
-Pydantic
-pandas
-numpy
-plot
+Стек технологий
+База данных
+Технология	Назначение
+PostgreSQL	Основная база данных проекта
+psycopg2	Драйвер подключения Python к PostgreSQL
+Backend
+Технология	Назначение
+Python	Основной язык разработки
+FastAPI	REST API для связи клиентов с базой
+SQLAlchemy	ORM: таблицы как Python-классы
+Pydantic	Валидация данных в API
+Uvicorn	Сервер для запуска FastAPI
+Клиенты
+Технология	Назначение
+Streamlit	Web-интерфейс: дашборды, отчёты, аналитика
+Данные и аналитика
+Технология	Назначение
+pandas	Таблицы, агрегации, отчёты
+numpy	Математика и работа с массивами
+Инструменты
+Технология	Назначение
+Git	Контроль версий
+GitHub	Хранение репозитория
