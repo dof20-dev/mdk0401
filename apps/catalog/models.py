@@ -1,53 +1,58 @@
-from django.db import models
+﻿from django.db import models
 
 
-class Location(models.Model):
-    name = models.CharField("Название", max_length=255)
+class Subject(models.Model):
+    """Учебный предмет."""
+    name = models.CharField("Название", max_length=50, unique=True)
+    teacher_name = models.CharField("Учитель", max_length=100, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = "Локация"
-        verbose_name_plural = "Локации"
+        verbose_name = "Предмет"
+        verbose_name_plural = "Предметы"
+        ordering = ["name"]
 
     def __str__(self):
         return self.name
 
 
-class Category(models.Model):
-    name = models.CharField("Название", max_length=255)
+class Student(models.Model):
+    """Ученик."""
 
-    class Meta:
-        verbose_name = "Категория"
-        verbose_name_plural = "Категории"
+    class ClassName(models.TextChoices):
+        A_5 = "5А", "5А"
+        B_5 = "5Б", "5Б"
+        A_9 = "9А", "9А"
+        B_9 = "9Б", "9Б"
+        A_11 = "11А", "11А"
+        B_11 = "11Б", "11Б"
 
-    def __str__(self):
-        return self.name
+    class Status(models.TextChoices):
+        ACTIVE = "active", "Учится"
+        EXPELLED = "expelled", "Отчислен"
+        GRADUATED = "graduated", "Выпустился"
 
-
-class Vendor(models.Model):
-    name = models.CharField("Название", max_length=255, unique=True)
-
-    class Meta:
-        verbose_name = "Производитель"
-        verbose_name_plural = "Производители"
-
-    def __str__(self):
-        return self.name
-
-
-class Model(models.Model):
-    vendor = models.ForeignKey(
-        Vendor, on_delete=models.PROTECT,
-        verbose_name="Производитель",
+    full_name = models.CharField("ФИО", max_length=100)
+    class_name = models.CharField(
+        "Класс", max_length=10,
+        choices=ClassName.choices, default=ClassName.A_5,
     )
-    category = models.ForeignKey(
-        Category, on_delete=models.PROTECT,
-        verbose_name="Категория",
+    parent_phone = models.CharField("Телефон родителя", max_length=20, blank=True)
+    birth_date = models.DateField("Дата рождения", null=True, blank=True)
+    status = models.CharField(
+        "Статус", max_length=20,
+        choices=Status.choices, default=Status.ACTIVE,
     )
-    name = models.CharField("Модель", max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = "Модель"
-        verbose_name_plural = "Модели"
+        verbose_name = "Ученик"
+        verbose_name_plural = "Ученики"
+        ordering = ["full_name"]
 
     def __str__(self):
-        return f"{self.vendor.name} {self.name}"
+        return f"{self.full_name} ({self.class_name})"
+
+    @property
+    def is_active(self):
+        return self.status == self.Status.ACTIVE

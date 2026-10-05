@@ -1,28 +1,16 @@
-from django.contrib import admin
-from .models import Category, Location, Model, Vendor
+﻿from django.contrib import admin
+from .models import Subject, Student
 
 
-@admin.register(Location)
-class LocationAdmin(admin.ModelAdmin):
-    list_display = ("id", "name")
+@admin.register(Subject)
+class SubjectAdmin(admin.ModelAdmin):
+    list_display = ("name", "teacher_name", "created_at")
     search_fields = ("name",)
 
 
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ("id", "name")
-    search_fields = ("name",)
-
-
-@admin.register(Vendor)
-class VendorAdmin(admin.ModelAdmin):
-    list_display = ("id", "name")
-    search_fields = ("name",)
-
-
-@admin.register(Model)
-class ModelAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "vendor", "category")
-    list_filter = ("vendor", "category")
-    search_fields = ("name",)
-    autocomplete_fields = ("vendor", "category")
+@admin.register(Student)
+class StudentAdmin(admin.ModelAdmin):
+    list_display = ("full_name", "class_name", "parent_phone", "status")
+    list_filter = ("class_name", "status")
+    search_fields = ("full_name", "parent_phone")
+    list_editable = ("status",)
