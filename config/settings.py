@@ -1,14 +1,18 @@
 import os
 from pathlib import Path
 
+# Базовая директория проекта
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-ваш-секретный-ключ-тут'
+# Секретный ключ (в реальном проекте его нужно скрывать в .env)
+SECRET_KEY = 'django-insecure-ваш-секретный-ключ-для-электронного-дневника'
 
+# Режим отладки (для учебного проекта оставляем True)
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+# Подключенные приложения
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -16,8 +20,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
     # Сторонние библиотеки
-    'rest_framework', 
+    'rest_framework',
+    'drf_spectacular',
+    
     # Наши приложения
     'apps.accounts',
     'apps.schedule',
@@ -50,20 +57,27 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-        },
+        },    
     },
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# База данных SQLite (для теста, пока без PostgreSQL)
+# ==========================================
+# НАСТРОЙКА БАЗЫ ДАННЫХ PostgreSQL
+# ==========================================
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'diary_db',       # Имя базы данных, которую ты создал в pgAdmin
+        'USER': 'postgres',       # Твой пользователь PostgreSQL
+        'PASSWORD': '123', # <--- ОБЯЗАТЕЛЬНО ЗАМЕНИ НА СВОЙ ПАРОЛЬ ОТ pgAdmin
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
 
+# Валидаторы паролей
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -71,13 +85,31 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+# Локализация и время
 LANGUAGE_CODE = 'ru-ru'
 TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
 USE_TZ = True
 
+# Статические файлы (CSS, JS)
 STATIC_URL = 'static/'
 
+# Автоматическое поле ID
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Кастомная модель пользователя
 AUTH_USER_MODEL = 'accounts.User'
+
+# ==========================================
+# НАСТРОЙКИ DJANGO REST FRAMEWORK (DRF) И SWAGGER
+# ==========================================
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API Электронного дневника',
+    'DESCRIPTION': 'Документация для системы учета оценок',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}

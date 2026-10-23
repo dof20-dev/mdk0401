@@ -42,8 +42,8 @@ TEMPLATES = [ # настройки шаблонов
                 "django.contrib.auth.context_processors.auth", # user
                 "django.contrib.messages.context_processors.messages", # messages
 ]        }   }   ],
-     
-                                 
+
+
         
     
 
